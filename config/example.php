@@ -4,10 +4,13 @@ return array(
 		'driver' => 'smtp',
 		'host' => 'host',
 		'port' => 25,
-		'localhost' => 'localhost',
 		'auth' => true,
 		'username' => 'youruser',
 		'password' => 'yourpassword',
-		'debug' => false
+		'debug' => false,
+
+		'sender_email' => 'test@test.com',
+		'sender_name' => 'Emailq'
+
 	),
 );
