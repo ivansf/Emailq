@@ -17,7 +17,8 @@ class Kohana_Emailq {
 	 * @static
 	 * @return Kohana_Emailq
 	 */
-	public static function factory() {
+	public static function factory()
+	{
 		return new Kohana_Emailq();
 	}
 
@@ -26,7 +27,8 @@ class Kohana_Emailq {
 	 *
 	 * @return void
 	 */
-	public function Kohana_Emailq() {
+	public function Kohana_Emailq()
+	{
 		require_once MODPATH . 'emailq/swiftmailer/swift_required.php';
 		$this->config = Kohana::config('emailq');
 		//print_r($this->config);
@@ -41,7 +43,8 @@ class Kohana_Emailq {
 	 * @param  $body
 	 * @return boolean - returns wether the message was added to the database.
 	 */
-	public function add_email($email, $name, $subject, $body) {
+	public function add_email($email, $name, $subject, $body)
+	{
 		$queue = ORM::factory('emailqueue');
 		$queue->email = $email;
 		$queue->name = $name;
@@ -59,7 +62,8 @@ class Kohana_Emailq {
 	 * @param int $amount - Amount of messages it will try to send per request.
 	 * @return void
 	 */
-	public function send_emails($amount = 50) {
+	public function send_emails($amount = 50)
+	{
 		$config = $this->config->mail_options;
 		$emails = ORM::factory('emailqueue')
 				->limit($amount)
@@ -85,6 +89,33 @@ class Kohana_Emailq {
 			//Optionally add any attachments
 			//->attach(Swift_Attachment::fromPath('my-document.pdf'));
 		}
-
 	}
+
+
+	/**
+	 * Builds a table with the current queue
+	 *
+	 * @return string with an html table
+	 */
+	public function queue_table($class = null)
+	{
+		$emails = ORM::factory('emailqueue')->find_all();
+		$table = "<table";
+
+		if (isset($class))
+			$table .= ' class="'. $class .'"';
+		$table .= "> \n";
+		$table .= "<thead> \n <tr>  \n\t<th>email</th>\n\t<th>Name</th>".
+				"\n\t<th>Subject</th>\n </tr>  \n</thead>  \n"; // ugly html to render with line breaks and tabs
+		foreach ($emails as $e) {
+			$table .= "<tr>  \n" .
+					"\t <td>" . $e->email . "</td>  \n" .
+					"\t <td>" . $e->name . "</td>  \n" .
+					"\t <td>" . $e->subject . "</td>  \n" .
+					"</tr>  \n";
+		}
+		$table .= "</table>  \n";
+		return $table;
+	}
+
 }
